@@ -85,9 +85,9 @@ try:
 
     if (len(courses) > 0):
         with open("webPage.txt", "w") as file:
-            file.write("Course Groups: ")
-            file.write("\n".join(groups))
-            file.write("")
+            file.write("Course Groups: \n")
+            file.write(", ".join(groups))
+            file.write("\n")
             file.write("Courses: \n")
             for course in courses:
                 group = course[0]
