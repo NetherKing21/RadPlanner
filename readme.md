@@ -1,10 +1,10 @@
 ## Overview
 
-**Project Title**:
+**Project Title**: RadPlanner
 
-**Project Description**:
+**Project Description**: A better version of Grad Planner
 
-**Project Goals**:
+**Project Goals**: 
 
 ## Instructions for Build and Use
 
