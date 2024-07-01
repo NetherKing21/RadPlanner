@@ -1,0 +1,78 @@
+body {
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Montserrat';
+    font-weight: 700;
+    text-align: center;
+    font-size: 6em;
+}
+
+p {
+    font-family: 'Roboto';
+    font-weight: 500;
+}
+
+form {
+    display: inline-block;
+}
+
+input {
+    font-family: 'Roboto';
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+}
+
+.textbox {
+    height: 150px;
+    width: 700px;
+    font-family: 'Roboto';
+    font-weight: 500;
+}
+
+input[type="text"] {
+    font-size: 50px;
+}
+
+.submit {
+    display: none !important;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.flex-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    width: 80%;
+}
+
+.semes_check {
+    display: flex;
+    flex-direction: column;
+}
+
+.credit_amount {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.credit_range {
+    display: flex;
+    align-content: right;
+}
+
+.credit_range input[type="number"] {
+    font-size: 14px;
+    padding: 5px;
+    margin: 5px;
+    width: 50px; /* Set the desired width */
+}
+

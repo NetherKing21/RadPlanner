@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select Your Track</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #336699;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        background-color: #4da6ff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.4);
+        width: 500px;
+        text-align: center;
+      }
+      h1 {
+        font-size: 36px;
+        color: white;
+        margin-bottom: 20px;
+      }
+      .option {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: white;
+      }
+      .option input {
+        margin-right: 10px;
+      }
+      .credits {
+        font-size: 18px;
+        color: white;
+        text-align: left;
+        margin-bottom: 10px;
+      }
+      .credits input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      .credits input::placeholder {
+        color: #999;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Select Your Track!</h1>
+
+    <div class="container">
+      <div class="option">
+        <input type="checkbox" id="winter" name="track" value="winter" />
+        <label for="winter">Winter</label>
+      </div>
+      <div class="option">
+        <input type="checkbox" id="spring" name="track" value="spring" />
+        <label for="spring">Spring</label>
+      </div>
+      <div class="option">
+        <input type="checkbox" id="fall" name="track" value="fall" />
+        <label for="fall">Fall</label>
+      </div>
+      <div class="credits">
+        <label for="minCredits">Minimum credits per semester:</label>
+        <input
+          type="number"
+          id="minCredits"
+          name="minCredits"
+          min="1"
+          max="18"
+          placeholder="Min"
+        />
+
+        <label for="maxCredits">Maximum credits per semester:</label>
+        <input
+          type="number"
+          id="maxCredits"
+          name="maxCredits"
+          min="1"
+          max="18"
+          placeholder="Max"
+        />
+      </div>
+    </div>
+  </body>
+</html>
