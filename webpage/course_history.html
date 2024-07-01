@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course History</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/course_history.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $(".select2").select2();
+
+        $(".select2").on("select2:select", function (e) {
+          var data = e.params.data;
+          var item = $("<li></li>").text(data.text);
+          $("#selectedItemsList").append(item);
+
+          $(this)
+            .find('option[value="' + data.id + '"]')
+            .remove();
+          $(this).trigger("change");
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Tell us what classes you have already taken</h1>
+      <div class="sec_container">
+        <select class="select2" name="courses">
+          <option value="" disabled selected>Select a course</option>
+          <option> </option> <!-- do NOT remove!!! -->
+          <option value="CSE110">CSE 110</option>
+          <option value="CSE111">CSE 111</option>
+          <option value="CSE210">CSE 210</option>
+          <option value="CSE310">CSE 310</option>
+        </select>
+
+        <div id="selectedItemsContainer">
+          <ul id="selectedItemsList"></ul>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+body {
+  font-family: "Montserrat";
+  background-color: #336699;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0px;
+}
+
+.container {
+  display: flex; /* Ensures flexbox properties */
+  flex-direction: column; /* Aligns children vertically */
+  justify-content: center; /* Centers vertically if needed */
+  align-items: center; /* Centers horizontally */
+  width: 100%; /* Takes full width to ensure center alignment */
+  max-width: 1200px; /* Optional: limits how wide the container can get */
+  height: auto; /* Only as tall as its content requires */
+}
+
+.sec_container {
+  background-color: #4da6ff;
+  width: 90%;
+  height: 450px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  border-radius: 5px;
+  box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.4);
+}
+
+h1 {
+  font-size: 52px;
+  color: white;
+  text-shadow: 0px 0px 3px black;
+}
+
+.select2 {
+  width: 500px;
+}
+
+#selectedItemsContainer {
+  background-color: white;
+  display: flex;
+  width: 540px; /* Adjust width to match select2 or as needed */
+  height: 300px;
+  margin-top: 20px; /* Ensure there is space between select2 and this container */
+}
