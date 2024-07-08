@@ -99,7 +99,7 @@ with open(file_path, 'r') as file:
 
             #save course info WITH PREREQUISITES
             with open("CoursesWithPrerequisites.txt", "a") as file2:
-                course_info = f'{code}, {name}, {credits}, {group}, {link}, "{description}, {prerequisites}"\n'
+                course_info = f'{code}, {name}, {credits}, {group}, {link}, {description}, {prerequisites}\n'
                 file2.write(course_info)
 
 
