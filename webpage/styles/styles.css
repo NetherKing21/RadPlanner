@@ -1,5 +1,8 @@
 body {
     text-align: center;
+    background-color: #336699;
+    justify-content: center;
+    margin: 100px;
 }
 
 h1 {
@@ -7,6 +10,7 @@ h1 {
     font-weight: 700;
     text-align: center;
     font-size: 6em;
+    color: white;
 }
 
 p {
@@ -30,6 +34,14 @@ input {
     width: 700px;
     font-family: 'Roboto';
     font-weight: 500;
+    margin: 50px;
+    background-color: #4da6ff;
+    border: none;
+    box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.4);
+}
+
+textarea:focus, input:focus{
+    outline: none;
 }
 
 input[type="text"] {
