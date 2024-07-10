@@ -12,6 +12,7 @@ body {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 60%;
 }
 label {
   display: block;
@@ -31,4 +32,33 @@ select:focus {
   outline: none;
   border-color: #66afe9;
   box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+}
+
+.cert {
+  display: inline-block;
+}
+
+.dropdown-container input,
+.dropdown-container label {
+  display: inline-block;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  padding: 10px;
+}
+
+.button-div {
+  align-items: center;
+}
+
+button {
+    float: right;
+    font-size: 20px;
+    border-radius: 6px;
 }
