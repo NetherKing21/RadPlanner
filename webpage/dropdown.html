@@ -1,5 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dropdown Options</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/webpage/styles/dropdown.css" />
+  </head>
+  <body>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,35 +24,51 @@
     <title>Dropdown Options</title>
 </head>
 <body>
-
     <div class="dropdown-container">
-        <label for="major">Select Major:</label>
-        <select id="major">
+      <form id="major" action="/action_page.php">
+        <fieldset>
+          <label for="major">Select Major:</label>
+          <select id="major">
             <option value="" disabled selected>Select your major</option>
             <option value="cs">Computer Science</option>
             <option value="bio">Biology</option>
             <option value="eng">Engineering</option>
             <!-- Add more options as needed -->
-        </select>
+          </select>
 
-        <label for="emphasis">Select Emphasis:</label>
-        <select id="emphasis">
+          <label for="emphasis">Select Emphasis:</label>
+          <select id="emphasis">
             <option value="" disabled selected>Select your emphasis</option>
             <option value="ai">Artificial Intelligence</option>
             <option value="genetics">Genetics</option>
             <option value="mechanical">Mechanical</option>
             <!-- Add more options as needed -->
-        </select>
+          </select>
 
-        <label for="certifications">Add Certification(s):</label>
-        <select id="certifications" multiple>
-            <input type="checkbox" value="aws">AWS Certified Solutions Architect</option>
-            <input type="checkbox" value="ccna">Cisco Certified Network Associate</option>
-            <input type="checkbox" value="pmp">Project Management Professional</option>
-            <!-- Add more options as needed -->
-        </select>
+          <label for="certifications">Add Certification(s):</label>
+          <ul>
+            <li>
+              <input id="ccna" class="cert" type="checkbox" value="ccna" />
+              <label for="aws">AWS Certified Solutions Architect</label>
+            </li>
+            <li>
+              <input id="aws" class="cert" type="checkbox" value="aws" />
+              <label for="ccna">Cisco Certified Network Associate</label>
+            </li>
+            <li>
+              <input id="pmp" class="cert" type="checkbox" value="pmp" />
+              <label for="pmp">Project Management Professional</label>
+            </li>
+          </ul>
+          <div class="button-div">
+            <button form="major" type="button">Submit</button>
+          </div>
+        </fieldset>
+      </form>
     </div>
-
+  </body>
+  <footer><a href="course_history.html">Course History Page</a></footer>
+</html>
 </body>
 <footer><a href="course_history.html">Course History Page</a></footer>
 </html>
