@@ -31,4 +31,5 @@ def insertDepartments(departmentList, cursor, db):
     
     db.commit()
 
-insertDepartments(departments, my_cursor, radPlannerDB)
+#Run this line ONCE!
+# insertDepartments(departments, my_cursor, radPlannerDB)
