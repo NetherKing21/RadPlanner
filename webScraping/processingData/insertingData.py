@@ -46,6 +46,17 @@ def insertDepartments(departmentList, cursor, db):
 
 
 def interpret_prereq_string(data: str) -> list:
+    "returns list of prereq dicts"
+    # needs prereq_relationship, prereq_type, prereq_amount_min, prereq_specific, prereq_amount_max
+    
+    # if null return
+    
+    # find first substring e.g. "take the following"
+        # if contains "complete", it's more than 1 prereq dict im pretty sure
+        # if contains "all", specific = true & amount_min = number of courses in that part
+        # if contains "{0-9} of" , specific = false & amount_min = that {0-9} number
+    # OH MY GOSH i think i need a prereq-to-prereq table BRUHHHHHHHHHH
+    # done for today smh
     pass
 
 
