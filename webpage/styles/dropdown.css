@@ -62,3 +62,7 @@ button {
     font-size: 20px;
     border-radius: 6px;
 }
+
+fieldset {
+    border-style: none;
+}
