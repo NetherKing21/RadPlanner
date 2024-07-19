@@ -63,6 +63,10 @@ button {
     border-radius: 6px;
 }
 
+<<<<<<< HEAD
+fieldset {
+    border-style: none;
+=======
 body {
     font-family: Arial, sans-serif;
     background-color: #336699;
@@ -96,4 +100,5 @@ select:focus {
     outline: none;
     border-color: #66afe9;
     box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+>>>>>>> e4b22e9a11e27941dbdab7070ba56d586c986ae7
 }
