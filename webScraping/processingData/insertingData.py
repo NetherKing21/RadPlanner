@@ -1,82 +1,153 @@
+
 import mysql.connector
+import ast
+import re
+
 
 def main():
-    #Change this latter for the actual database
-    radPlannerDB = mysql.connector.connect(
-    host="localhost",
-    user="yourusername",
-    password="yourpassword",
-    database="rad_planner"
-    )
+   #Change this latter for the actual database
+   radPlannerDB = mysql.connector.connect(
+   host="localhost",
+   user="yourusername",
+   password="yourpassword",
+   database="rad_planner"
+   )
 
-    my_cursor = radPlannerDB.cursor()
 
-    #Get departments
-    departments = ['PLACEHOLDER Department']
+   my_cursor = radPlannerDB.cursor()
 
-    with open('CoursesWithPrerequisites copy.csv', 'r') as file:
-        for line in file:
-            parts = line.strip().split(',')
-            department = parts[3].strip()
 
-            if department not in departments:
-                departments.append(department)
-        
-        #for line in reader #i think idk
-        #   build course dict
-        #   insert course
+   #Get departments
+   departments = ['PLACEHOLDER Department']
 
-    print(departments)
-    
-    
-    #Run this line ONCE!
-    # insertDepartments(departments, my_cursor, radPlannerDB)
+
+   with open('CoursesWithPrerequisites copy.csv', 'r') as file:
+       for line in file:
+           parts = line.strip().split(',')
+           department = parts[3].strip()
+
+
+           if department not in departments:
+               departments.append(department)
+      
+       #for line in reader #i think idk
+       #   build course dict
+       #   insert course
+
+
+   print(departments)
+  
+  
+   #Run this line ONCE!
+   # insertDepartments(departments, my_cursor, radPlannerDB)
+
+
+
 
 
 
 #Insert departments into database
 def insertDepartments(departmentList, cursor, db):
-    sql = get_dept_insert("PLACEHOLDER_DEPT")
-    cursor.execute(sql)
-    for department in departmentList:
-        sql = get_dept_insert(department)
-        cursor.execute(sql)
-    
-    db.commit()
+   sql = get_dept_insert("PLACEHOLDER_DEPT")
+   cursor.execute(sql)
+   for department in departmentList:
+       sql = get_dept_insert(department)
+       cursor.execute(sql)
+  
+   db.commit()
+
+
 
 
 def interpret_prereq_string(data: str) -> list:
-    "returns list of prereq dicts"
-    # needs prereq_relationship, prereq_type, prereq_amount_min, prereq_specific, prereq_amount_max
-    
-    # if null return
-    
-    # find first substring e.g. "take the following"
-        # if contains "complete", it's more than 1 prereq dict im pretty sure
-        # if contains "all", specific = true & amount_min = number of courses in that part
-        # if contains "{0-9} of" , specific = false & amount_min = that {0-9} number
-    # OH MY GOSH i think i need a prereq-to-prereq table BRUHHHHHHHHHH
-    # done for today smh
-    pass
+   """returns list of prereq dicts"""
+   all_prereqs = []
+   # needs to find prereq_relationship, prereq_type, prereq_amount_min, prereq_specific, prereq_amount_max
+  
+   # if null return
+   if data == 'null':
+       return all_prereqs
+  
+   new_prereq = {
+       'specific' : True
+   }
+   # find first substring e.g. "take the following"
+   data = data.replace(';', ',')
+   data_tuple = ast.literal_eval(data)
 
 
-def parse_course_code(data:str) -> list:
-    """ returns list<str>[subject_code, course_code] e.g. ['CSE', '100'] """
-    #search from beginning until you hit a number
-    #split there and return both halves
-    pass
+       # if contains "complete", it's more than 1 prereq dict im pretty sure
+   if data_tuple[0].lower().contains('complete'):
+       # if contains "all", specific = true & amount_min = number of sub-prereqs
+       new_prereq['type'] = 'gate'
+       if data_tuple[0].lower().contains('all'):
+           new_prereq['relationship'] = 'and'
+           new_prereq['amount_min'] = 10001 #TODO: whatever that number  of listed classes is
+       # variants:
+   # Complete all of the
+   # complete 1 of the
+   # take 1 of the
+   # take the following
+   else:
+       # if contains "{0-9} of" , specific = false & amount_min = that {0-9} number
+       if re.findall(r'\d', data_tuple[0]): #TODO: might always return true
+           new_prereq['relationship'] = 'or'
+           new_prereq['amount_min'] = re.findall(r'\d', data_tuple[0])[0]
+       else:
+           new_prereq['relationship'] = 'and'
+           new_prereq['amount_min'] = 10000 #TODO: whatever that number  of listed classes is
+  
+   # Defaults amount_max to same as amount_min
+   if not 'amount_max' in new_prereq.keys:
+       new_prereq['amount_max'] = new_prereq['amount_min']
+      
+   return all_prereqs
+
+
+
+
+def parse_course_code(full_code: str) -> list:
+   """ returns list<str>[subject_code, course_code] e.g. ['CSE', '100'] """
+   #search from beginning until you hit a number
+   for i, char in enumerate(full_code):
+       if char.isdigit():
+           #split there and return both halves
+           return [full_code[:i], full_code[i:]]
+
+
+   # if return not reached
+   raise AssertionError(f'Invalid input of {full_code}to parse_course_code()')
+  
+
+
 
 
 def build_course_dict(course) -> dict:
-    #declare dict with easy data
-    #get/interpret other data
-    #return
-    pass
+   #declare dict with easy data
+   course_dict = {
+       'title' : course[COURSE_TITLE_INDEX],
+       'credits' : course[COURSE_CREDITS_INDEX],
+       'dept' : course[COURSE_DEPT_INDEX]
+      
+   }
+   #get/interpret other data
+   sc_cc = parse_course_code(course[COURSE_CODE_INDEX])
+   course_dict['subject code'] = sc_cc[0]
+   course_dict['course code'] = sc_cc[1]
+
+
+   #TODO: Add more info
+   #REQUIRED: Prereq stuff,
+  
+   #return
+   return course_dict
+
 
 # setup
 # - dept
-#     - insert placeholder dept 
+#     - insert placeholder dept
 #     - insert all depts #1
+
 
 COURSE_CODE_INDEX = 0
 COURSE_TITLE_INDEX = 1
@@ -87,176 +158,205 @@ COURSE_DESCRIPTION_INDEX = 5
 COURSE_PREREQ_STRING_INDEX = 6
 
 
+
+
 def insertCourse(course_dict: dict, cursor, db) -> None:
 
-    # for each course
-        #for course in 
-    # - insert subject code #2
-    # - query course table #3 & save id if retrieved
-    #     - if got id (not null):
-    #         - Path A: Update query #4
-    #     - else (null)
-    #         - Path B: insert #5
-    # - insert prereq object #6
-    # - map prereq object to proper courses
-    #     - to parent:
-    #         - simple insert actually #7
-    #     - to child
-    #         - select course id & save to var #8
-    #             - if got id (not null):
-    #                 - insert mapping row with retrieved id #9
-    #             - else:
-    #                 - insert temp row for course #10
-    #                 - insert mapping row w/ temp row id #11
-    
-    pass
+    #**TODO**
+   # for each course
+       #for course in
+   # - insert subject code #2
+   # - query course table #3 & save id if retrieved
+   #     - if got id (not null):
+   #         - Path A: Update query #4
+   #     - else (null)
+   #         - Path B: insert #5
+   # - insert prereq object #6
+   # - map prereq object to proper courses
+   #     - to parent:
+   #         - simple insert actually #7
+   #     - to child
+   #         - select course id & save to var #8
+   #             - if got id (not null):
+   #                 - insert mapping row with retrieved id #9
+   #             - else:
+   #                 - insert temp row for course #10
+   #                 - insert mapping row w/ temp row id #11
+  
+   pass
+
 
 #1
 def get_dept_insert(dept: str) -> str:
-    return f'INSERT IGNORE INTO department (department_name) VALUES (\'{dept}\')'
+   return f'INSERT IGNORE INTO department (department_name) VALUES (\'{dept}\')'
+
+
 
 
 #2
 def get_subject_code_insert(code: str) -> str:
-    return f'INSERT IGNORE INTO subject_code (subject_code_string) VALUES ( \'{code}\')'
+   return f'INSERT IGNORE INTO subject_code (subject_code_string) VALUES ( \'{code}\')'
+
+
 
 
 #3
 def get_course_select(full_course_code: str) -> str:
-    """ accepts full course code e.g. CSE100 """
-    return f'SELECT course_id
-                FROM course c
-                JOIN subject_code sc
-                    ON c.subject_code_id = sc.subject_code_id
-                WHERE CONCAT(c.subject_code_string, c.course_code) = \'{full_course_code}\' 
-                ;'
+   """ accepts full course code e.g. CSE100 """
+   return f'SELECT course_id
+               FROM course c
+               JOIN subject_code sc
+                   ON c.subject_code_id = sc.subject_code_id
+               WHERE CONCAT(c.subject_code_string, c.course_code) = \'{full_course_code}\'
+               ;'
+
+
 
 
 #4
 def get_course_update(title: str, credits: str, can_audit: str, dept_name: str, fetched_course_id: str) -> str:
-    """ credits as int, can_audit as 0 (false) or 1 (true) , fetched_course_id (int.tostring) should come from get_course_select(). Dept name needed to link tables."""
-    return f'UPDATE course
-                SET course_title = \'{title}\', 
-                    course_credit_hrs =  {credits}, 
-                    course_can_audit = {can_audit}, 
-                    department_id = (SELECT department_id
-                                        FROM department
-                                        WHERE department_name = \'{dept_name}\' 
-                                        LIMIT 1 ;)
-                WHERE course_id = {fetched_course_id} 
-                ;'
+   """ credits as int, can_audit as 0 (false) or 1 (true) , fetched_course_id (int.tostring) should come from get_course_select(). Dept name needed to link tables."""
+   return f'UPDATE course
+               SET course_title = \'{title}\',
+                   course_credit_hrs =  {credits},
+                   course_can_audit = {can_audit},
+                   department_id = (SELECT department_id
+                                       FROM department
+                                       WHERE department_name = \'{dept_name}\'
+                                       LIMIT 1 ;)
+               WHERE course_id = {fetched_course_id}
+               ;'
+
+
 
 
 #5
 def get_course_insert(subject_code: str, course_code: str, title: str, credits: str, can_audit: str, dept_name: str) -> str:
-    return f'INSERT INTO course
-                (course_code, course_title, course_credit_hrs, course_can_audit, department_id, subject_code_id)
-                VALUES 
-                ( \'{course_code}\'),
-                ( \'{title}\'),
-                ( {credits}),
-                ( {can_audit}),
-                ( 	(SELECT department_id
-                    FROM department
-                    WHERE department_name = \'{dept_name}\' 
-                    LIMIT 1 ;) ),
-                ( 	(SELECT subject_code_id
-                    FROM subject_code
-                    WHERE subject_code_string = \'{subject_code}\' 
-                    LIMIT 1 ;)
-                );'
+   return f'INSERT INTO course
+               (course_code, course_title, course_credit_hrs, course_can_audit, department_id, subject_code_id)
+               VALUES
+               ( \'{course_code}\'),
+               ( \'{title}\'),
+               ( {credits}),
+               ( {can_audit}),
+               (   (SELECT department_id
+                   FROM department
+                   WHERE department_name = \'{dept_name}\'
+                   LIMIT 1 ;) ),
+               (   (SELECT subject_code_id
+                   FROM subject_code
+                   WHERE subject_code_string = \'{subject_code}\'
+                   LIMIT 1 ;)
+               );'
 
 
-#6 
+
+
+#6
 def get_prereq_insert(prereq_relationship, prereq_type, prereq_amount_min, prereq_specific, prereq_amount_max) -> str:
-    return f'INSERT INTO prereq
-            (prereq_relationship, prereq_type, prereq_amount_min, prereq_specific, prereq_amount_max)
-            VALUES
-            ( {prereq_relationship}  
-            ),( \'{prereq_type}\'  
-            ),( {prereq_amount_min} 
-            ),( {prereq_specific} 
-            ),( {prereq_amount_max} 
-            );'
+   return f'INSERT INTO prereq
+           (prereq_relationship, prereq_type, prereq_amount_min, prereq_specific, prereq_amount_max)
+           VALUES
+           ( {prereq_relationship} 
+           ),( \'{prereq_type}\' 
+           ),( {prereq_amount_min}
+           ),( {prereq_specific}
+           ),( {prereq_amount_max}
+           );'
+
 
 #7
 def get_prereq_to_parent_insert(subject_code, course_code) -> str:
-    """ maps the most recently inserted prereq object to the course given in params. Course must exist already."""
-    return f'INSERT INTO prereq_to_parent
-            (prereq_id, course_id)
-            VALUES
-            (	SELECT prereq_id
-                FROM prereq
-                ORDER BY prereq_id DESC
-                LIMIT 1;
-            )
-            (	SELECT course_id
-                FROM course c
-                JOIN subject_code sc
-                    ON sc.subject_code_id = c.subject_code_id
-                WHERE (c.course_code = \'{course_code}\') 
-                AND ( 	sc.subject_code_string = \'{subject_code}\' 
-                )
-            );'
+   """ maps the most recently inserted prereq object to the course given in params. Course must exist already."""
+   return f'INSERT INTO prereq_to_parent
+           (prereq_id, course_id)
+           VALUES
+           (   SELECT prereq_id
+               FROM prereq
+               ORDER BY prereq_id DESC
+               LIMIT 1;
+           )
+           (   SELECT course_id
+               FROM course c
+               JOIN subject_code sc
+                   ON sc.subject_code_id = c.subject_code_id
+               WHERE (c.course_code = \'{course_code}\')
+               AND (   sc.subject_code_string = \'{subject_code}\'
+               )
+           );'
+
+
 
 
 #8
 def get_child_reference_select(full_course_code: str) -> str:
-    """ might be null? idk but this returns a query that sees if the child exists and if so it returns its info"""
-    return f'SELECT course_id
-            FROM courses c
-            JOIN subject_code sc
-                ON c.subject_code_id = sc.subject_code_id
-            WHERE CONCAT(c.subject_code_string, c.course_code) = \'{full_course_code}\' 
-            LIMIT 1
-            ;' 
+   """ might be null? idk but this returns a query that sees if the child exists and if so it returns its info"""
+   return f'SELECT course_id
+           FROM courses c
+           JOIN subject_code sc
+               ON c.subject_code_id = sc.subject_code_id
+           WHERE CONCAT(c.subject_code_string, c.course_code) = \'{full_course_code}\'
+           LIMIT 1
+           ;'
+
+
 
 
 #9
 def get_prereq_to_found_child_insert(child_reference_id) -> str:
-    return f'INSERT INTO prereq_to_child
-            (prereq_id, course_id)
-            VALUES
-            ((SELECT prereq_id
-                FROM prereq
-                ORDER BY prereq_id DESC
-                LIMIT 1;)
-            , {child_reference_id} 
-            )'
+   return f'INSERT INTO prereq_to_child
+           (prereq_id, course_id)
+           VALUES
+           ((SELECT prereq_id
+               FROM prereq
+               ORDER BY prereq_id DESC
+               LIMIT 1;)
+           , {child_reference_id}
+           )'
+
+
 
 
 #10
 def get_temp_course_insert(subject_code: str, course_code: str) -> str:
-    return f'INSERT INTO course
-            (course_code, course_title, course_credit_hrs, course_can_audit, department_id, subject_code_id)
-            VALUES
-            ( \'{course_code}\' 
-            ),( \'PLACEHOLDER FOR {subject_code + course_code}\' 
-            ),( 0,
-            ),( FALSE,
-            ),( 1
-            ),( 	(SELECT subject_code_id
-                    FROM subject_code
-                    WHERE subject_code_string = \'{subject_code}\' 
-                    LIMIT 1 ;)
-            );'
+   return f'INSERT INTO course
+           (course_code, course_title, course_credit_hrs, course_can_audit, department_id, subject_code_id)
+           VALUES
+           ( \'{course_code}\'
+           ),( \'PLACEHOLDER FOR {subject_code + course_code}\'
+           ),( 0,
+           ),( FALSE,
+           ),( 1
+           ),(     (SELECT subject_code_id
+                   FROM subject_code
+                   WHERE subject_code_string = \'{subject_code}\'
+                   LIMIT 1 ;)
+           );'
+
+
 
 
 #11
 def get_prereq_to_temp_child_insert() -> str:
-    """ no params, just needs to run directly after get_temp_course_insert (#10)"""
-    return f'INSERT INTO prereq_to_child 
-            (prereq_id, course_id)
-            VALUES
-            ((SELECT prereq_id
-                FROM prereq
-                ORDER BY prereq_id DESC
-                LIMIT 1;)
-            ),((SELECT course_id
-                FROM course
-                ORDER BY course_id DESC
-                LIMIT 1;)
-            );'
+   """ no params, just needs to run directly after get_temp_course_insert (#10)"""
+   return f'INSERT INTO prereq_to_child
+           (prereq_id, course_id)
+           VALUES
+           ((SELECT prereq_id
+               FROM prereq
+               ORDER BY prereq_id DESC
+               LIMIT 1;)
+           ),((SELECT course_id
+               FROM course
+               ORDER BY course_id DESC
+               LIMIT 1;)
+           );'
+
+
+
+
+
+
 
 
 
@@ -264,4 +364,6 @@ def get_prereq_to_temp_child_insert() -> str:
 
 
 if __name__ == "main":
-    main()
+   main()
+
+
