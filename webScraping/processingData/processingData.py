@@ -1,3 +1,5 @@
+import ast
+
 # file_path = 'Courses.txt'
 file_path = 'CoursesWithPrerequisites.txt'
 
@@ -103,3 +105,35 @@ def fixDoubleQuotes():
             
 # fixDoubleQuotes()
 
+def findAllPreRecConditions(_file):
+    conditions = {}
+    line_counter = 0
+    with open(_file, 'r') as file:
+        for line in file:
+            line_counter = line_counter + 1
+            parts = line.strip().split(',')
+            preRec = parts[6].strip()
+            # print(preRec)
+            if preRec != 'null':
+                preRec = preRec.replace(';', ',')
+                preRec = ast.literal_eval(preRec)
+                condition = preRec[0].strip()
+                requirement = preRec[1]
+
+                for item in requirement:
+                    if type(item) == tuple:
+                        subCondition = item[0].strip()
+                        if subCondition in conditions.keys():
+                            conditions[subCondition] = conditions[subCondition] + 1
+                        else:
+                            conditions[subCondition] = 1
+
+                if condition in conditions.keys():
+                    conditions[condition] = conditions[condition] + 1
+                else:
+                    conditions[condition] = 1
+
+    for item in sorted(conditions, key=conditions.get, reverse=True):
+        print(f'{item}, {conditions[item]}')
+
+# findAllPreRecConditions(file_path)
